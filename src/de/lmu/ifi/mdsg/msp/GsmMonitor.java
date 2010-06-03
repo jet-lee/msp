@@ -58,7 +58,7 @@ public class GsmMonitor extends View {
 		int right = 20;
 		
 		
-		// int signal =(int)( signalstrength* 0.3 + 10 );
+		// int signal =(int)( signalstrength* 0.3 + 2 );
 		
 		int signal = (int)( 11 * 0.3 + 2);
 		if(signal > 9)
