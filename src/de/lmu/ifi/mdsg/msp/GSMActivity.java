@@ -5,6 +5,9 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.telephony.CellLocation;
 import android.telephony.NeighboringCellInfo;
@@ -15,7 +18,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
+import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
+import com.google.android.maps.MapView;
+import com.google.android.maps.Overlay;
 
 
 public class GSMActivity extends MapActivity {
@@ -28,6 +34,11 @@ public class GSMActivity extends MapActivity {
 	public static TelephonyManager telephonyManager;
 	GsmCellLocation gsmCellLocation;
 	List<NeighboringCellInfo> neighboringCells;
+	
+	MapView mapView;
+	LocationManager locationManager;
+	
+	ShowPositionOverlay showOverlay;
 
 /**********************************************************************************************/
 	@Override
@@ -37,16 +48,14 @@ public class GSMActivity extends MapActivity {
 		
 		gsmTextView = (TextView) findViewById(R.id.gsmtextview);
 		
-		
+
 		
 		gsmTextView.setOnClickListener(new OnClickListener(){
 
 			public void onClick(View v) {
 				Intent monitoractivity = new Intent(GSMActivity.this,GsmMonitorActivity.class);
 				startActivity(monitoractivity);
-			}
-			
-			
+			}			
 		}
 		);
 			
@@ -80,10 +89,7 @@ public class GSMActivity extends MapActivity {
 				gsmTextView.setText(buffer.toString());		
 				
 			}		
-			
- 
-			
-			
+		
 		};
 		
 		telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
@@ -93,8 +99,54 @@ public class GSMActivity extends MapActivity {
 		
 		telephonyManager.listen(listener, PhoneStateListener.LISTEN_SIGNAL_STRENGTH);
 		telephonyManager.listen(listener, PhoneStateListener.LISTEN_CELL_LOCATION);
+		
+		
+		
+		//*********** TEIL 2 *****************//
+		
+		mapView = (MapView)findViewById(R.id.gsmMapView);
+		
+		mapView.setBuiltInZoomControls(true);
+
+		LocationListener locationListener = new LocationListener() {
+			
+			public void onStatusChanged(String provider, int status, Bundle extras) {
+				// TODO Auto-generated method stub
+			}
+			
+			public void onProviderEnabled(String provider) {
+				// TODO Auto-generated method stub
 				
+
+				
+			}
+			
+			public void onProviderDisabled(String provider) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			public void onLocationChanged(Location location) {
+				// TODO Auto-generated method stub
+
+				showOverlay.setLocation(location);
+				
+			}
+		};
+		
+		
+		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		
+		// 1. Provier - 2. mindest Zeit - 3. mindest Distanz - 4. listener
+		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2, 100, locationListener);
+
+		GeoPoint point = new GeoPoint(19240000,-99120000);
+		
+		showOverlay = new ShowPositionOverlay();
+
+
 	}
+	
 /**********************************************************************************************/
 	
 	

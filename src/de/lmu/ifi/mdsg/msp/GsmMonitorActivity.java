@@ -1,10 +1,7 @@
 package de.lmu.ifi.mdsg.msp;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
-import android.telephony.PhoneStateListener;
-import android.telephony.TelephonyManager;
 
 
 
